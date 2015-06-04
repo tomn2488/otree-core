@@ -118,6 +118,14 @@ PEP8 = {
     )
 }
 
+PY_2TO3 = {
+    "check": (
+        os.path.join(PRJ_DIR, "otree"),
+    ),
+    "exclude": (
+    )
+}
+
 
 MTURK_WORKER_REQUIREMENTS = []
 

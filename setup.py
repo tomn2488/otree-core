@@ -3,6 +3,12 @@ import sys
 
 from setuptools import setup, find_packages
 
+PY_VER = tuple(sys.version_info)[:2]
+
+if PY_VER[0] == 2 and PY_VER[1] != 7 or \
+   PY_VER[0] == 3 and PY_VER[1] < 4:
+        print("oTree only works in python 2.7 or python >= 3.4")
+        sys.exit(1)
 
 README = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
@@ -53,11 +59,11 @@ if sys.argv[-1] == 'publish':
     os.system(cmd)
 
     cmd = 'git tag -a %s -m "version %s"' % (version, version)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     cmd = "git push --tags"
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     sys.exit()
@@ -91,8 +97,9 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         # replace these appropriately if you are using Python 3
-        'Programming Language :: Python :: 2',
+        "Programming Language :: Python",
         'Programming Language :: Python :: 2.7',
+        "Programming Language :: Python :: 3",
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
