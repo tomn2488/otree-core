@@ -17,7 +17,7 @@ class MyPage(Page):
     form_fields = ['add100_1', 'add100_2']
 
     timeout_seconds = 10
-    auto_submit_values = {
+    timeout_submission = {
         'add100_1': 1,
         'add100_2': 99,
     }
@@ -32,6 +32,10 @@ class MyPage(Page):
         return {
             'my_variable_here': 1,
         }
+
+    def even_int_error_message(self, value):
+        if value % 2:
+            return 'Must be an even number'
 
     def error_message(self, values):
         if values['add100_1'] + values['add100_2'] != 100:
