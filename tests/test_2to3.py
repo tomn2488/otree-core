@@ -68,7 +68,7 @@ class TestRefactorTool(refactor.RefactoringTool):
 # TEST
 # =============================================================================
 
-class TestStyle(TestCase):
+class TestPython3(TestCase):
 
     def setUp(self):
         fixer_names = sorted(
