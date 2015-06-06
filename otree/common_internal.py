@@ -1,8 +1,6 @@
 
 import os
 import sys
-import urllib
-import urlparse
 from os.path import dirname, join
 from collections import OrderedDict
 
@@ -13,6 +11,7 @@ from django.template.defaultfilters import title
 from django.utils.importlib import import_module
 
 import six
+from six.moves.urllib import urlparse
 
 from otree import constants
 
@@ -24,7 +23,7 @@ def add_params_to_url(url, params):
     # for readability/consistency
     query = OrderedDict(urlparse.parse_qsl(url_parts[4]))
     query.update(params)
-    url_parts[4] = urllib.urlencode(query)
+    url_parts[4] = urlparse.urlencode(query)
     return urlparse.urlunparse(url_parts)
 
 
@@ -183,7 +182,7 @@ def contract_choice_tuples(choices):
     '''
     if not choices:
         return None
-    elif not isinstance(choices[0], (list, tuple)):
+    elif not isinstance(choices[0], six.integer_types):
         return choices
     return [value for value, _ in choices]
 
@@ -191,7 +190,7 @@ def contract_choice_tuples(choices):
 def min_players_multiple(players_per_group):
     ppg = players_per_group
 
-    if isinstance(ppg, (int, long)) and ppg >= 1:
+    if isinstance(ppg, six.integer_types) and ppg >= 1:
         return ppg
     if isinstance(ppg, (list, tuple)):
         return sum(ppg)
@@ -208,7 +207,7 @@ def reraise(original):
     conversor = constants.exceptions_conversors.get(
         original_cls, lambda err: err)
     new = conversor(original)
-    six.reraise(utils.OperationalError, new, sys.exc_traceback)
+    six.reraise(utils.OperationalError, new)
 
 
 def db_table_exists(table_name):
