@@ -1,6 +1,5 @@
 
 import os
-import sys
 from os.path import dirname, join
 from collections import OrderedDict
 
@@ -11,20 +10,20 @@ from django.template.defaultfilters import title
 from django.utils.importlib import import_module
 
 import six
-from six.moves.urllib import urlparse
+from six.moves import urllib
 
 from otree import constants
 
 
 def add_params_to_url(url, params):
-    url_parts = list(urlparse.urlparse(url))
+    url_parts = list(urllib.parse.urlparse(url))
 
     # use OrderedDict because sometimes we want certain params at end
     # for readability/consistency
-    query = OrderedDict(urlparse.parse_qsl(url_parts[4]))
+    query = OrderedDict(urllib.parse.parse_qsl(url_parts[4]))
     query.update(params)
-    url_parts[4] = urlparse.urlencode(query)
-    return urlparse.urlunparse(url_parts)
+    url_parts[4] = urllib.parse.urlencode(query)
+    return urllib.parse.urlunparse(url_parts)
 
 
 def id_label_name(id, label):

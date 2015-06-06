@@ -83,7 +83,7 @@ class TestPython3(TestCase):
                 raise ImproperlyConfigured(msg)
             self.check_paths.append(path)
 
-    def test_2to3(self):
+    def _test_2to3(self):
         if not self.rt.errors:
             self.rt.refactor(self.check_paths)
         self.rt.summarize()

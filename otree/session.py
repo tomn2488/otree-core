@@ -6,7 +6,7 @@ import re
 from django.conf import settings
 from django.db import transaction
 
-import six
+from six.moves import range
 
 from otree import constants
 from otree.models.session import Session, Participant
@@ -179,7 +179,7 @@ def create_session(session_type_name, label='', num_participants=None,
         models_module = get_models_module(app_name)
         app_constants = get_app_constants(app_name)
 
-        round_numbers = tuple(six.range(1, app_constants.num_rounds + 1))
+        round_numbers = tuple(range(1, app_constants.num_rounds + 1))
 
         subs = bulk_create(models_module.Subsession, [
             {'round_number': round_number}
