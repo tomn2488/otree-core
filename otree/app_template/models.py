@@ -17,6 +17,7 @@ doc = """
 Your app description
 """
 
+
 class Constants:
     name_in_url = '{{ app_name }}'
     players_per_group = None
@@ -36,13 +37,13 @@ class Group(otree.models.BaseGroup):
 
     def set_payoffs(self):
         for p in self.get_players():
-            p.payoff = 0 # change to whatever the payoff should be
+            p.payoff = 0  # change to whatever the payoff should be
 
 
 class Player(otree.models.BasePlayer):
     # <built-in>
     subsession = models.ForeignKey(Subsession)
-    group = models.ForeignKey(Group, null = True)
+    group = models.ForeignKey(Group, null=True)
     # </built-in>
 
     def other_player(self):
@@ -57,7 +58,6 @@ class Player(otree.models.BasePlayer):
         Description of this field, for documentation
         """
     )
-
 
     def role(self):
         # you can make this depend of self.id_in_group

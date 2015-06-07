@@ -40,6 +40,9 @@ from django.http import (
     HttpResponse, HttpResponseRedirect, Http404, HttpResponseNotFound
 )
 
+import six
+from six.moves import range
+
 import vanilla
 
 import otree.forms
@@ -732,20 +735,20 @@ class AssignVisitorToOpenSessionBase(vanilla.View):
         return 'Missing or incorrect parameters in URL'
 
     def url_has_correct_parameters(self):
-        for _, get_param_name in self.required_params.items():
+        for _, get_param_name in six.iteritems(self.required_params):
             if get_param_name not in self.request.GET:
                 return False
         return True
 
     def retrieve_existing_participant_with_these_params(self, default_session):
         params = {
-            field_name: self.request.GET[get_param_name]
-            for field_name, get_param_name in self.required_params.items()
+            fname: self.request.GET[get_pname]
+            for fname, get_pname in six.iteritems(self.required_params)
         }
         return Participant.objects.get(session=default_session, **params)
 
     def set_external_params_on_participant(self, participant):
-        for field_name, get_param_name in self.required_params.items():
+        for field_name, get_param_name in six.iteritems(self.required_params):
             setattr(participant, field_name, self.request.GET[get_param_name])
 
     def get(self, *args, **kwargs):

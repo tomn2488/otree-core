@@ -1,10 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import copy
 import itertools
 import time
+import contextlib
 
 import django.test
 from django.db import transaction
 from django.conf import settings
+
+import six
+from six.moves import range
 
 from otree import constants
 import otree.common_internal
@@ -13,7 +20,7 @@ from otree.common_internal import id_label_name
 from otree.common import Currency as c
 from otree.db import models
 from otree.models_concrete import SessionuserToUserLookup
-import contextlib
+
 
 
 class GlobalSingleton(models.Model):
@@ -562,7 +569,7 @@ class Participant(SessionUser):
         money_to_pay = self.money_to_pay()
         if complete:
             return money_to_pay
-        return u'{} (incomplete)'.format(money_to_pay)
+        return six.u('{} (incomplete)').format(money_to_pay)
 
     def name(self):
         return id_label_name(self.pk, self.label)

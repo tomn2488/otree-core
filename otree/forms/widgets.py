@@ -1,10 +1,18 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from decimal import Decimal
 
-from babel.core import Locale
-from django.conf import settings
 import babel
 import babel.numbers
+from babel.core import Locale
+
+from django.conf import settings
+
+import six
+
 import easymoney
+
 import floppyforms.__future__ as forms
 import floppyforms.widgets
 
@@ -83,7 +91,7 @@ class BaseMoneyInput(forms.NumberInput):
         if not format:
             format = locale.currency_formats.get(None)
         pattern = babel.numbers.parse_pattern(format)
-        return u'\xa4' in pattern.prefix[0]
+        return six.u('\xa4') in pattern.prefix[0]
 
     def _format_value(self, value):
         if isinstance(value, easymoney.Money):

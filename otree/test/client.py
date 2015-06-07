@@ -15,7 +15,6 @@
 
 import re
 import importlib
-import urlparse
 import decimal
 import logging
 import abc
@@ -23,6 +22,9 @@ import abc
 from django import test
 
 from easymoney import Money as Currency
+
+import six
+from six.moves.urllib import parse
 
 from otree import constants
 from otree.views.concrete import WaitUntilAssignedToGroup
@@ -103,7 +105,8 @@ class Submit(object):
         if self.input_is_valid and has_errors:
             form = self.bot.response.context_data['form']
             errors = [
-                "{}: {}".format(k, repr(v)) for k, v in form.errors.items()
+                "{}: {}".format(k, repr(v))
+                for k, v in six.iteritems(form.errors)
             ]
             msg = ('Input was rejected.\nPath: {}\nErrors: {}\n').format(
                 self.bot.path, errors
@@ -121,9 +124,8 @@ class Submit(object):
 # BASE CLIENT
 # =============================================================================
 
+@six.add_metaclass(abc.ABCMeta)
 class BaseClient(test.Client):
-
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
         self.response = None
@@ -194,7 +196,7 @@ class BaseClient(test.Client):
     def set_path(self):
         try:
             self.url = self.response.redirect_chain[-1][0]
-            self.path = urlparse.urlsplit(self.url).path
+            self.path = parse.urlsplit(self.url).path
         except IndexError:
             pass
 

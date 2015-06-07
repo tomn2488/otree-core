@@ -16,15 +16,16 @@
 import logging
 import contextlib
 import collections
-import itertools
 import time
 import random
 
 from django.utils.importlib import import_module
-
 from django import test
 from django.test import runner
 from django.template import response
+
+import six
+from six.moves import zip_longest
 
 import otree.models
 from otree import constants, session
@@ -102,11 +103,13 @@ class PendingBuffer(object):
     def __len__(self):
         return len(self.storage)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return bool(self.storage)
 
+    __nonzero__ = __bool__
+
     def __iter__(self):
-        for k, v in self.storage.items():
+        for k, v in six.iteritems(self.storage):
             yield k, v
             if k in self.storage:
                 self.storage[k] += 1
@@ -120,7 +123,7 @@ class PendingBuffer(object):
         del self.storage[submit]
 
     def is_blocked(self, submit):
-        return submit.bot in [s.bot for s in self.storage.keys()]
+        return submit.bot in [s.bot for s in six.iterkeys(self.storage)]
 
 
 # =============================================================================
@@ -145,8 +148,8 @@ class OTreeExperimentFunctionTest(test.TransactionTestCase):
     def zip_submits(self, bots):
         bots = list(bots)
         random.shuffle(bots)
-        submits = map(lambda b: b.submits, bots)
-        return list(itertools.izip_longest(*submits))
+        submits = [b.submits for b in bots]
+        return list(zip_longest(*submits))
 
     def _run_subsession(self, subsession):
         app_label = subsession._meta.app_config.name
@@ -161,7 +164,7 @@ class OTreeExperimentFunctionTest(test.TransactionTestCase):
             test_module = import_module(test_module_name)
             logger.info("Found test '{}'".format(test_module_name))
         except ImportError as err:
-            self.fail(unicode(err))
+            self.fail(six.u(err))
 
         logger.info("Creating and staring bots for '{}'".format(app_label))
 
@@ -237,7 +240,7 @@ class OTreeExperimentTestRunner(runner.DiscoverRunner):
     def build_suite(self, session_names, extra_tests, **kwargs):
 
         if not session_names:
-            session_names = session.get_session_types_dict().keys()
+            session_names = list(session.get_session_types_dict().keys())
 
         tests = []
         for session_name in session_names:
@@ -270,7 +273,8 @@ def apps_from_sessions(session_names=None):
     if session_names:
         session_names = frozenset(session_names)
     else:
-        session_names = frozenset(session.get_session_types_dict().keys())
+        session_names = frozenset(
+            six.iterkeys(session.get_session_types_dict()))
     apps = set()
     for sname in session_names:
         sssn = session.get_session_types_dict()[sname]

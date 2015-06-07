@@ -4,6 +4,7 @@ from otree.templatetags.otree_tags import NextButtonNode
 
 
 class TemplateCheckContent(object):
+
     def __init__(self, root):
         self.root = root
 

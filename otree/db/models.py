@@ -9,8 +9,12 @@ from django.db.models.fields import related
 from django.core import exceptions
 from django.utils.translation import ugettext_lazy
 
+import six
+
 from handy.models import PickleField
+
 import easymoney
+
 from idmap.metaclass import SharedMemoryModelBase
 from idmap.models import SharedMemoryModel
 
@@ -42,8 +46,8 @@ def make_get_display(field):
     return get_FIELD_display
 
 
+@six.add_metaclass(OTreeModelBase)
 class OTreeModel(SharedMemoryModel):
-    __metaclass__ = OTreeModelBase
 
     class Meta:
         abstract = True

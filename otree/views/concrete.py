@@ -7,7 +7,6 @@
 # =============================================================================
 
 import time
-import vanilla
 
 import django.utils.timezone
 from django.core.urlresolvers import reverse
@@ -18,6 +17,8 @@ from django.contrib import messages
 from django.http import (
     HttpResponseRedirect, HttpResponseNotFound
 )
+
+import vanilla
 
 import otree.constants as constants
 import otree.models.session
@@ -281,7 +282,7 @@ class AssignVisitorToOpenSession(AssignVisitorToOpenSessionBase):
 
     def incorrect_parameters_in_url_message(self):
         return 'Missing parameter(s) in URL: {}'.format(
-            self.required_params.values()
+            list(self.required_params.values())
         )
 
     @classmethod
@@ -289,7 +290,7 @@ class AssignVisitorToOpenSession(AssignVisitorToOpenSessionBase):
         return otree.common_internal.add_params_to_url(
             '/{}'.format(cls.__name__), {
                 otree.constants.access_code_for_default_session:
-                    settings.ACCESS_CODE_FOR_DEFAULT_SESSION
+                settings.ACCESS_CODE_FOR_DEFAULT_SESSION
             }
         )
 

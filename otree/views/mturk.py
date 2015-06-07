@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import urlparse
 import datetime
 
 from django.conf import settings
@@ -9,6 +8,8 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponseServerError
 from django.shortcuts import get_object_or_404
+
+from six.moves.urllib import parse
 
 import vanilla
 
@@ -113,9 +114,9 @@ class SessionCreateHitForm(forms.Form):
     def clean_assignments(self):
         data = self.cleaned_data['assignments']
         if data > len(self.session.get_participants()):
-            raise forms.ValidationError("""Number of Mturk assignments should be less or equal
-                                           than number of participants in
-                                           oTree session.""")
+            raise forms.ValidationError(
+                "Number of Mturk assignments should be less or equal "
+                "than number of participants in oTree session.")
         return data
 
 
@@ -171,8 +172,8 @@ class SessionCreateHit(AdminSessionPageMixin, vanilla.FormView):
         url = self.request.build_absolute_uri(
             reverse('session_create_hit', args=(self.session.pk,))
         )
-        secured_url = urlparse.urlunparse(
-            urlparse.urlparse(url)._replace(scheme='https')
+        secured_url = parse.urlunparse(
+            parse.urlparse(url)._replace(scheme='https')
         )
         context['secured_url'] = secured_url
         return self.render_to_response(context)
@@ -203,8 +204,8 @@ class SessionCreateHit(AdminSessionPageMixin, vanilla.FormView):
 
             # updating schema from http to https
             # this is compulsory for MTurk exteranlQuestion
-            secured_url_landing_page = urlparse.urlunparse(
-                urlparse.urlparse(url_landing_page)._replace(scheme='https')
+            secured_url_landing_page = parse.urlunparse(
+                parse.urlparse(url_landing_page)._replace(scheme='https')
             )
 
             # TODO: validate, that the server support https

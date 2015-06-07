@@ -15,6 +15,8 @@ from django.http import HttpResponse
 from django.utils.importlib import import_module
 from django.conf import settings
 
+import six
+
 import vanilla
 
 import otree.common_internal
@@ -45,7 +47,7 @@ def choices_readable(choices):
     lines = []
     for value, name in choices:
         # unicode() call is for lazy translation strings
-        lines.append(u'{}: {}'.format(value, unicode(name)))
+        lines.append(six.u('{}: {}').format(value, six.u(name)))
 
     return lines
 
@@ -87,7 +89,7 @@ def get_doc_dict(app_label):
                 ]
                 doc_dict[model_name][member_name]['doc'] = ['Unique ID']
 
-            elif callable(member):
+            elif six.callable(member):
                 doc_dict[model_name][member_name]['doc'] = [
                     inspect.getdoc(member)
                 ]
@@ -140,9 +142,10 @@ def get_docs_as_string(app_label, doc_dict):
             for info_type in doc_dict[model_name][member]:
                 lines.append('\t\t{}'.format(info_type))
                 for info_line in doc_dict[model_name][member][info_type]:
-                    lines.append(u'{}{}'.format('\t' * 3, info_line))
+                    lines.append(
+                        six.u('{}{}').format(six.u('\t' * 3, info_line)))
 
-    output = u'\n'.join(lines)
+    output = six.u('\n').join(lines)
     return output.replace('\n', LINE_BREAK).replace('\t', '    ')
 
 

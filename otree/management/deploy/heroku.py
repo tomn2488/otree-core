@@ -1,8 +1,21 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
 import argparse
 import os
 import sys
 import textwrap
 
+import six
+
+
+# =============================================================================
+# PATCHS AND CONSTANTS
+# =============================================================================
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 
@@ -13,9 +26,9 @@ parser = argparse.ArgumentParser()
 COMMANDS = {}
 
 
-###########################################################################
-#                                resetdb                                  #
-###########################################################################
+# =============================================================================
+# RESET DB
+# =============================================================================
 
 
 def resetdb(args):
@@ -95,7 +108,7 @@ COMMANDS['help'] = show_help
 ###########################################################################
 
 
-parser.add_argument('subcommand', nargs=1, choices=COMMANDS.keys())
+parser.add_argument('subcommand', nargs=1, choices=six.iterkeys(COMMANDS))
 
 
 def execute_from_command_line(argv):

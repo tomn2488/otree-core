@@ -3,7 +3,6 @@
 
 import threading
 import time
-import urllib
 import uuid
 import itertools
 
@@ -12,6 +11,9 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
 from django.forms.forms import pretty_name
 from django.conf import settings
+
+import six
+from six.moves.urllib import parse
 
 import vanilla
 
@@ -90,17 +92,9 @@ def get_all_fields(Model, for_export=False):
             ]
 
     first_fields = {
-        'Player':
-            [
-                'id_in_group',
-                'role',
-            ],
-        'Group':
-            [
-                'id',
-            ],
-        'Subsession':
-            [],
+        'Player': ['id_in_group', 'role'],
+        'Group': ['id'],
+        'Subsession': []
     }[Model.__name__]
     first_fields = oset(first_fields)
 
@@ -236,7 +230,7 @@ def get_display_table_rows(app_name, for_export, subsession_pk=None):
                     model_instance = parent_objects[Model][parent_object_id]
 
             attr = getattr(model_instance, field_name, '')
-            if callable(attr):
+            if six.callable(attr):
                 if Model == Player and field_name == 'role' \
                         and model_instance.group is None:
                     attr = ''
@@ -258,7 +252,7 @@ def get_display_table_rows(app_name, for_export, subsession_pk=None):
             elif for_export and isinstance(value, easymoney.Money):
                 # remove currency formatting for easier analysis
                 value = easymoney.to_dec(value)
-            value = unicode(value).encode('UTF-8')
+            value = six.u(value).encode('UTF-8')
             value = value.replace('\n', ' ').replace('\r', ' ')
             row[i] = value
 
@@ -391,7 +385,7 @@ class CreateSession(vanilla.FormView):
         return 'session_create'
 
     def dispatch(self, request, *args, **kwargs):
-        session_type_name = urllib.unquote_plus(kwargs.pop('session_type'))
+        session_type_name = parse.unquote_plus(kwargs.pop('session_type'))
         self.session_type = get_session_types_dict()[session_type_name]
         return super(CreateSession, self).dispatch(request, *args, **kwargs)
 
@@ -463,7 +457,7 @@ class SessionMonitor(AdminSessionPageMixin, vanilla.TemplateView):
             row = []
             for fn in field_names:
                 attr = getattr(p, fn)
-                if callable(attr):
+                if six.callable(attr):
                     attr = attr()
                 row.append(attr)
             rows.append(row)
@@ -702,7 +696,7 @@ def info_about_session_type(session_type):
             'keywords': keywords_links(getattr(models_module, 'keywords', [])),
             'name': formatted_app_name,
         }
-        seo.update(map(lambda (a, b): a, subsssn["keywords"]))
+        seo.update([subsssn_kw[0] for subsssn_kw in subsssn["keywords"]])
         app_sequence.append(subsssn)
     return {
         'doc': session_type['doc'],
@@ -726,7 +720,7 @@ def keywords_links(keywords):
     for kw in keywords:
         kw = kw.strip()
         if kw:
-            args = urllib.urlencode({"q": kw + " game theory", "t": "otree"})
+            args = parse.urlencode({"q": kw + " game theory", "t": "otree"})
             link = "https://duckduckgo.com/?{}".format(args)
             links.append((kw, link))
     return links

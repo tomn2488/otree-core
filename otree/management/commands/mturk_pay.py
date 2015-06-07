@@ -13,6 +13,8 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand, CommandError
 
+from six.moves import input
+
 from mturk import mturk
 
 from otree.models.session import Session
@@ -85,7 +87,7 @@ class Command(BaseCommand):
         else:
             self.pay_hit_bonuses(is_confirmed=False)
 
-            confirmed = raw_input('Enter "Y" to perform transaction:\n') == 'Y'
+            confirmed = input('Enter "Y" to perform transaction:\n') == 'Y'
             if confirmed:
                 self.pay_hit_bonuses(is_confirmed=True)
             else:

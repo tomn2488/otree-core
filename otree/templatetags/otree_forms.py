@@ -1,5 +1,6 @@
-from collections import namedtuple
+
 import sys
+from collections import namedtuple
 
 from django.db import models
 from django.template import Node
@@ -8,7 +9,8 @@ from django.template import Variable
 from django.template import VariableDoesNotExist
 from django.template.base import token_kwargs
 from django.template.loader import get_template
-from django.utils import six
+
+import six
 
 import floppyforms.templatetags.floppyforms as floppyforms_templatetags
 
@@ -39,7 +41,7 @@ class FormNode(floppyforms_templatetags.FormNode):
         form = self.get_form_instance(context)
         if form is not None:
             missing_fields = context.get(FORM_UNRENDERED_FIELDS, [])
-            for field_name, field in form.fields.items():
+            for field_name, field in six.iteritems(form.fields):
                 if field not in self.get_rendered_fields(context):
                     missing_fields.append(UnrenderedField(
                         field_name, form.add_prefix(field_name), field))
@@ -145,9 +147,10 @@ class FormFieldNode(Node):
             'bound_field': bound_field
         }
         if self.with_arguments:
-            extra_context.update(dict([
-                (name, var.resolve(context))
-                for name, var in self.with_arguments.items()]))
+            extra_context.update({
+                name: var.resolve(context)
+                for name, var in six.iteritems(self.with_arguments)
+            })
         return extra_context
 
     def render(self, context):

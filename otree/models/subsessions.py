@@ -3,7 +3,10 @@
 
 import random
 
+import six
+
 from save_the_change.mixins import SaveTheChange
+
 from otree.db import models
 from otree.common_internal import (
     get_models_module, get_players, get_groups,
@@ -83,7 +86,7 @@ class BaseSubsession(SaveTheChange, models.Model):
             assert all(n > 1 for n in ppg)
             group_cycle = ppg
         else:
-            assert isinstance(ppg, (int, long)) and ppg > 1
+            assert isinstance(ppg, six.iteger_types) and ppg > 1
             group_cycle = [ppg]
 
         num_group_cycles = subsession_size / sum(group_cycle)

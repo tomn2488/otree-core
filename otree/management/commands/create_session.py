@@ -1,4 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django.core.management.base import BaseCommand, CommandError, make_option
+
 from otree.session import create_session
 
 
@@ -12,7 +16,7 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        print 'Creating session...'
+        print('Creating session...')
         try:
             session_type_name, num_participants = args
         except ValueError:

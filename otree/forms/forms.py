@@ -12,10 +12,11 @@ from floppyforms.__future__.models import (
     ModelFormMetaclass as FloppyformsModelFormMetaclass
 )
 
+import six
+
 import django.forms as django_forms
 from django.forms import models as django_model_forms
 from django.utils.translation import ugettext as _
-
 
 import easymoney
 
@@ -157,8 +158,8 @@ class BaseModelFormMetaclass(FloppyformsModelFormMetaclass):
             mcs, name, bases, attrs)
 
 
+@six.add_metaclass(BaseModelFormMetaclass)
 class BaseModelForm(forms.ModelForm):
-    __metaclass__ = BaseModelFormMetaclass
 
     def __init__(self, *args, **kwargs):
         """Special handling for 'choices' argument, BooleanFields, and
@@ -208,7 +209,7 @@ class BaseModelForm(forms.ModelForm):
                 # selected item was the None choice, by removing it, nothing
                 # is selected.
 
-                if field.choices[0][0] in {u'', None}:
+                if field.choices[0][0] in {six.u(''), None}:
                     field.choices = field.choices[1:]
 
         self._setup_field_boundaries()
@@ -253,7 +254,7 @@ class BaseModelForm(forms.ModelForm):
         return [min_value, max_value]
 
     def _setup_field_boundaries(self):
-        for field_name, field in self.fields.items():
+        for field_name, field in six.iteritems(self.fields):
             # We want to support both, django and floppyforms widgets.
             cond = isinstance(
                 field.widget, (django_forms.NumberInput, forms.NumberInput)
@@ -284,7 +285,7 @@ class BaseModelForm(forms.ModelForm):
 
     def _clean_fields(self):
         boolean_field_names = self.boolean_field_names()
-        for name, field in self.fields.items():
+        for name, field in six.iteritems(self.fields):
             # value_from_datadict() gets the data from the data dictionaries.
             # Each widget type knows how to retrieve its own data, because some
             # widgets split data over several HTML fields.

@@ -1,5 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import floppyforms.__future__ as forms
+
 from easymoney import to_dec
+
 from . import widgets
 
 
