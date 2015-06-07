@@ -124,8 +124,7 @@ class Submit(object):
 # BASE CLIENT
 # =============================================================================
 
-@six.add_metaclass(abc.ABCMeta)
-class BaseClient(test.Client):
+class BaseClient(six.with_metaclass(abc.ABCMeta, test.Client)):
 
     def __init__(self, **kwargs):
         self.response = None

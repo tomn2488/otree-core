@@ -46,8 +46,7 @@ def make_get_display(field):
     return get_FIELD_display
 
 
-@six.add_metaclass(OTreeModelBase)
-class OTreeModel(SharedMemoryModel):
+class OTreeModel(six.with_metaclass(SharedMemoryModel, OTreeModelBase)):
 
     class Meta:
         abstract = True

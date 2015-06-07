@@ -158,8 +158,8 @@ class BaseModelFormMetaclass(FloppyformsModelFormMetaclass):
             mcs, name, bases, attrs)
 
 
-@six.add_metaclass(BaseModelFormMetaclass)
-class BaseModelForm(forms.ModelForm):
+class BaseModelForm(six.with_metaclass(BaseModelFormMetaclass,
+                                       forms.ModelForm)):
 
     def __init__(self, *args, **kwargs):
         """Special handling for 'choices' argument, BooleanFields, and
