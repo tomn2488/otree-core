@@ -14,3 +14,6 @@ class IDMapTestCaseMixin(object):
 
 class TestCase(IDMapTestCaseMixin, django.test.TestCase):
     pass
+
+class TransactionTestCase(IDMapTestCaseMixin, django.test.TransactionTestCase):
+    pass

@@ -37,13 +37,23 @@ class GlobalSingleton(models.Model):
 
 
 @contextlib.contextmanager
-def no_op_context_manager():
-    yield
-
-
-@contextlib.contextmanager
 def lock_on_this_code_path(lock_object=None):
+    '''This context manager is supposed to prevent race conditions
+    By preventing 2 threads from simultaneously
+    executing the code inside the context manager.
+    It does this by opening a transaction and then doing a select_for_update
+    on some object. (Default is a GlobalSingleton,
+    which will do a global lock, but can also use other
+    objects, like a "LockObject" that is specific to a participant or group.)
+
+    Because select_for_update is exclusive, a second thread cannot execute the
+    select_for_update until the first thread's transaction is complete.
+    '''
+
+
     if settings.DATABASES['default']['ENGINE'].endswith('sqlite3'):
+        # on SQLite, don't use transactions
+        # because they lock the database file?
         yield
     else:
         with transaction.atomic():

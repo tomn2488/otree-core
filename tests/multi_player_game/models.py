@@ -14,6 +14,8 @@ class Constants:
 
 class Subsession(otree.models.BaseSubsession):
 
+    winner_chosen = models.BooleanField()
+
     def before_session_starts(self):
         if self.round_number == 2:
             for group in self.get_groups():

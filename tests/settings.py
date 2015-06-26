@@ -1,5 +1,6 @@
 import os
 import otree.settings
+import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -15,10 +16,9 @@ SECRET_KEY = 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'
 AUTH_LEVEL = os.environ.get('OTREE_AUTH_LEVEL', 'DEMO')
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
+    )
 }
 
 CREATE_DEFAULT_SUPERUSER = True
